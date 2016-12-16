@@ -37,9 +37,9 @@ var sign = function (jsapi_ticket, url) {
     timestamp: createTimestamp(),
     url: url
   };
-  var string = raw(ret);
-      jsSHA = require('jssha');
-      shaObj = new jsSHA(string, 'TEXT');
+  var string = raw(ret),
+      jsSHA = require('jssha'),
+      shaObj = new jsSHA(string, 'TEXT')
   ret.signature = shaObj.getHash('SHA-1', 'HEX');
 
   return ret;
