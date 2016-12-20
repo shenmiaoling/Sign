@@ -1,17 +1,27 @@
 import React from 'react'
-// var wx = require('http://res.wx.qq.com/open/js/jweixin-1.0.0.js')
+import superagent from 'superagent'
 var sign = require('./sign.js');
 
 
 module.exports = React.createClass({
+  getInitialState() {
+    return {
+      access_token:''
+    }
+  },
   componentDidMount() {
-        console.log(sign('kgt8ON7yVITDhtdwci0qeQRJGNYgh1B1SIxNqERQhSOia6hTKcJkfun6i78E597-ULVky3zT3jKnlryXrQ7KwQ','https://test-jgbvkrfpnu.now.sh'))
+    // superagent.get('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxc2cd2c6ee316e3fc&secret=50aac85d19952d80a1fe230076960292').end((error,response)=>{
+    //   this.setState({
+    //     access_token: response.access_token
+    //   },()=>{console.log('message')})
+    // })
+      let s = sign('kgt8ON7yVITDhtdwci0qeQRJGNYgh1B1SIxNqERQhSPIIcSda3G65DehtRw3KCVkoiM2sPM5k3KJEVHnVAr9cQ','https://test-jgbvkrfpnu.now.sh')
       wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
       appId: 'wxc2cd2c6ee316e3fc', // 必填，公众号的唯一标识
-      timestamp: "1482111589", // 必填，生成签名的时间戳
-      nonceStr: 'gof3qpr60x8ooju', // 必填，生成签名的随机串
-      signature: "f28167c9917d0ddce5f4b03bab25cfccf4e48354",// 必填，签名，见附录1
+      timestamp: s.timestamp, // 必填，生成签名的时间戳
+      nonceStr: s.nonceStr, // 必填，生成签名的随机串
+      signature: s.signature,// 必填，签名，见附录1
       jsApiList: ['chooseImage','previewImage','uploadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     });
   },
@@ -48,7 +58,7 @@ module.exports = React.createClass({
   render() {
     return <div className="pages-404">
       <h4>主页</h4>
-      <button onClick={this.handleClick}> 选择图片 </button>
+      <button onClick={this.handleClick}>选择图片</button>
       <button onClick={this.handleUpload}>预览</button>
     </div>
   }
