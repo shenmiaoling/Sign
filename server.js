@@ -5,13 +5,16 @@ const serve = require('koa-static')
 const settings = require('./settings')
 const superagent = require('superagent')
 const server = koa()
-const router = require('koa-router')
+const router = require('koa-router')()
 //引入配置和方法
 var signature = require('./signature');
 var wechat_cfg = require('./config/wechat.cfg');
 
+server
+  .use(router.routes())
+  .use(router.allowedMethods());
 //增加一条api供客户端使用
-router.get("/", function(req,res) {
+router.get("/api/signature", function(req,res) {
   const url = req.query.url.split('#')[0];
   signature.sign(url,function(signatureMap){
     //因为config接口需要appid,多加一个参数传入appid
