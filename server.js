@@ -4,14 +4,21 @@ const views = require('koa-views')
 const serve = require('koa-static')
 const settings = require('./settings')
 const superagent = require('superagent')
-const localStorage = require('localStorage')
 const server = koa()
+const router = require('koa-router')
+//引入配置和方法
+var signature = require('./signature');
+var wechat_cfg = require('./config/wechat.cfg');
 
-superagent.get('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxc2cd2c6ee316e3fc&secret=50aac85d19952d80a1fe230076960292').end((error,response)=>{
-  console.log(response.body.access_token)
-  if (response.status==200) {
-    console.log('localStorage')
-  }
+//增加一条api供客户端使用
+router.get("/", function(req,res) {
+  const url = req.query.url.split('#')[0];
+  signature.sign(url,function(signatureMap){
+    //因为config接口需要appid,多加一个参数传入appid
+    signatureMap.appId = wechat_cfg.appid;
+    //发送给客户端
+    res.send(signatureMap);
+  });
 })
 server.use(mount('/assets', serve('./assets')))
 server.use(views('.', settings.template))
